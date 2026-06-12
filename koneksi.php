@@ -1,10 +1,10 @@
 <?php
 // koneksi.php (Terpusat untuk semua versi)
 
-$host = 'localhost';
-$user = 'root';
-$pass = ''; // Kosongkan jika menggunakan XAMPP default
-$db   = 'webgis_pontianak'; // Database bersama
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: '';
+$db   = getenv('DB_NAME') ?: 'webgis_pontianak';
 
 try {
     // Membangun koneksi PDO
