@@ -95,7 +95,7 @@ const RightToolbar = L.Control.extend({
     onAdd: function() {
         const container = L.DomUtil.create('div', 'custom-leaflet-toolbar');
         container.innerHTML = `
-            <button class="tool-btn" id="btn-tool-marker" title="Mode Marker" onclick="toggleMarkerMode()">📍</button>
+            <button class="tool-btn" id="btn-tool-marker" title="Mode Marker" onclick="toggleMarkerMode()"><i class='fa-solid fa-map-pin'></i></button>
         `;
         L.DomEvent.disableClickPropagation(container);
         return container;
@@ -200,7 +200,7 @@ map.on('click', async function(e) {
 // --- UTILITAS & KOSMETIK MODAL ---
 function triggerToastNotification(pesan = "Aksi berhasil dieksekusi!") {
     const toast = document.getElementById('toast-notification');
-    toast.innerText = pesan; toast.classList.add('show');
+    toast.innerHTML = pesan; toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
@@ -355,19 +355,19 @@ function renderSPBU() {
         // KUNCI: Reverse Geocoding saat Drag-and-Drop
         marker.on('dragend', async function(e) {
             const pos = e.target.getLatLng();
-            triggerToastNotification("⏳ Menganalisis alamat baru...");
+            triggerToastNotification("<i class='fa-solid fa-hourglass-half'></i> Menganalisis alamat baru...");
             
             // Tunggu alamat baru dari satelit sebelum dikirim ke database
             const alamatBaru = await dapatkanAlamat(pos.lat, pos.lng);
 
-            fetch('otak_spbu/api_update_coords.php', {
+            fetch('../otak_spbu/api_update_coords.php', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ id: d.id, lat: pos.lat, lng: pos.lng, alamat: alamatBaru })
             }).then(res => res.ok ? res.json() : Promise.reject(res)).then(res => {
                 dataStore.spbu[d.id].latitude = pos.lat; 
                 dataStore.spbu[d.id].longitude = pos.lng;
                 dataStore.spbu[d.id].alamat = alamatBaru;
-                triggerToastNotification("📍 Koordinat & Alamat berhasil digeser!");
+                triggerToastNotification("<i class='fa-solid fa-map-pin'></i> Koordinat & Alamat berhasil digeser!");
                 renderSPBU(); // Gambar ulang untuk update text di Sidebar
             }).catch(err => {
                 alert("Gagal menyimpan posisi."); e.target.setLatLng([dataStore.spbu[d.id].latitude, dataStore.spbu[d.id].longitude]);
@@ -456,15 +456,15 @@ window.eksekusiSimpanBaru = () => {
         lat: document.getElementById('spbu-lat').value, 
         lng: document.getElementById('spbu-lng').value 
     };
-    safeFetch('../otak_spbu/api_simpan.php', payload).then(() => { tutupModalSpbu(); triggerToastNotification("✅ SPBU ditambahkan!"); muatDataSPBU(); }).catch(err => alert(err));
+    safeFetch('../otak_spbu/api_simpan.php', payload).then(() => { tutupModalSpbu(); triggerToastNotification("<i class='fa-solid fa-check'></i> SPBU ditambahkan!"); muatDataSPBU(); }).catch(err => alert(err));
 };
 window.eksekusiUpdate = (id) => {
     const payload = { id: id, nama: document.getElementById('spbu-nama').value, status: document.getElementById('spbu-status').value, telp: document.getElementById('spbu-telp').value };
-    safeFetch('../otak_spbu/api_update.php', payload).then(() => { tutupModalSpbu(); triggerToastNotification("✅ SPBU diperbarui!"); muatDataSPBU(); }).catch(err => alert(err));
+    safeFetch('../otak_spbu/api_update.php', payload).then(() => { tutupModalSpbu(); triggerToastNotification("<i class='fa-solid fa-check'></i> SPBU diperbarui!"); muatDataSPBU(); }).catch(err => alert(err));
 };
 window.eksekusiHapus = (id) => {
     if(!confirm("Hapus SPBU ini?")) return;
-    safeFetch('../otak_spbu/api_hapus.php', { id: id }).then(() => { tutupModalSpbu(); triggerToastNotification("🗑️ SPBU dihapus."); muatDataSPBU(); }).catch(err => alert(err));
+    safeFetch('../otak_spbu/api_hapus.php', { id: id }).then(() => { tutupModalSpbu(); triggerToastNotification("<i class='fa-solid fa-trash'></i> SPBU dihapus."); muatDataSPBU(); }).catch(err => alert(err));
 };
 
 // --- JALAN ---
@@ -475,15 +475,15 @@ window.muatDataJalan = () => {
 };
 window.eksekusiSimpanJalan = () => {
     const payload = { nama: document.getElementById('jalan-nama').value, status: document.getElementById('jalan-status').value, jarak: document.getElementById('jalan-jarak').value, koordinat: document.getElementById('jalan-koordinat').value };
-    safeFetch('../otak_jalan/api_simpan.php', payload).then(() => { batalGambarJalan(); triggerToastNotification("✅ Jalan ditambahkan!"); muatDataJalan(); }).catch(err => alert(err));
+    safeFetch('../otak_jalan/api_simpan.php', payload).then(() => { batalGambarJalan(); triggerToastNotification("<i class='fa-solid fa-check'></i> Jalan ditambahkan!"); muatDataJalan(); }).catch(err => alert(err));
 };
 window.eksekusiUpdateJalan = (id) => {
     const payload = { id: id, nama: document.getElementById('jalan-nama').value, status: document.getElementById('jalan-status').value };
-    safeFetch('../otak_jalan/api_update.php', payload).then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("✅ Jalan diperbarui!"); muatDataJalan(); }).catch(err => alert(err));
+    safeFetch('../otak_jalan/api_update.php', payload).then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("<i class='fa-solid fa-check'></i> Jalan diperbarui!"); muatDataJalan(); }).catch(err => alert(err));
 };
 window.eksekusiHapusJalan = (id) => {
     if(!confirm("Hapus jalur ini?")) return;
-    safeFetch('../otak_jalan/api_hapus.php', { id: id }).then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("🗑️ Jalan dihapus."); muatDataJalan(); }).catch(err => alert(err));
+    safeFetch('../otak_jalan/api_hapus.php', { id: id }).then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("<i class='fa-solid fa-trash'></i> Jalan dihapus."); muatDataJalan(); }).catch(err => alert(err));
 };
 
 // --- TANAH ---
@@ -494,15 +494,15 @@ window.muatDataTanah = () => {
 };
 window.eksekusiSimpanTanah = () => {
     const payload = { nama: document.getElementById('tanah-nama').value, status: document.getElementById('tanah-status').value, luas: document.getElementById('tanah-luas').value, koordinat: document.getElementById('tanah-koordinat').value };
-    safeFetch('../otak_parsil/api_simpan.php', payload).then(() => { batalGambarTanah(); triggerToastNotification("✅ Tanah ditambahkan!"); muatDataTanah(); }).catch(err => alert(err));
+    safeFetch('../otak_parsil/api_simpan.php', payload).then(() => { batalGambarTanah(); triggerToastNotification("<i class='fa-solid fa-check'></i> Tanah ditambahkan!"); muatDataTanah(); }).catch(err => alert(err));
 };
 window.eksekusiUpdateTanah = (id) => {
     const payload = { id: id, nama: document.getElementById('tanah-nama').value, status: document.getElementById('tanah-status').value };
-    safeFetch('../otak_parsil/api_update.php', payload).then(() => { document.getElementById('modal-tanah').style.display='none'; triggerToastNotification("✅ Tanah diperbarui!"); muatDataTanah(); }).catch(err => alert(err));
+    safeFetch('../otak_parsil/api_update.php', payload).then(() => { document.getElementById('modal-tanah').style.display='none'; triggerToastNotification("<i class='fa-solid fa-check'></i> Tanah diperbarui!"); muatDataTanah(); }).catch(err => alert(err));
 };
 window.eksekusiHapusTanah = (id) => {
     if(!confirm("Hapus parsil ini?")) return;
-    safeFetch('../otak_parsil/api_hapus.php', { id: id }).then(() => { document.getElementById('modal-tanah').style.display='none'; triggerToastNotification("🗑️ Tanah dihapus."); muatDataTanah(); }).catch(err => alert(err));
+    safeFetch('../otak_parsil/api_hapus.php', { id: id }).then(() => { document.getElementById('modal-tanah').style.display='none'; triggerToastNotification("<i class='fa-solid fa-trash'></i> Tanah dihapus."); muatDataTanah(); }).catch(err => alert(err));
 };
 
 
@@ -516,7 +516,7 @@ setTimeout(() => {
     Promise.all([
         muatDataSPBU()
     ]).then(() => {
-        console.log("✅ Sistem WebGIS V2 Siap dan Data Tersinkronisasi Penuh.");
+        console.log("<i class='fa-solid fa-check'></i> Sistem WebGIS V2 Siap dan Data Tersinkronisasi Penuh.");
     }).catch(err => {
         console.error("Kegagalan Fatal Jaringan:", err);
     });

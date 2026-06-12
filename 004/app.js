@@ -86,7 +86,7 @@ async function dapatkanAlamat(lat, lng) {
 
 function triggerToastNotification(pesan) {
     const toast = document.getElementById('toast-notification');
-    toast.innerText = pesan; toast.classList.add('show');
+    toast.innerHTML = pesan; toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
@@ -187,7 +187,7 @@ window.toggleKemiskinanMode = () => {
     const wasActive = state.isKemiskinanMode; resetAllModes();
     if (!wasActive) { 
         state.isKemiskinanMode = true; const btn = document.getElementById('btn-add-kemiskinan');
-        btn.classList.add('active'); btn.innerHTML = `<span class="icon">📍</span> Mode Penempatan Aktif`;
+        btn.classList.add('active'); btn.innerHTML = `<span class="icon"><i class='fa-solid fa-map-pin'></i></span> Mode Penempatan Aktif`;
         map.getContainer().style.cursor = 'none'; 
     }
 };
@@ -198,7 +198,7 @@ const RightToolbar = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function() {
         const c = L.DomUtil.create('div', 'custom-leaflet-toolbar');
-        c.innerHTML = `<button class="tool-btn" id="btn-tool-marker" title="SPBU" onclick="toggleMarkerMode()">📍</button><button class="tool-btn" id="btn-tool-jalan" title="Jalan" onclick="toggleRoadMode()">🛣️</button><button class="tool-btn" id="btn-tool-tanah" title="Tanah" onclick="toggleLandMode()">🟩</button>`;
+        c.innerHTML = `<button class="tool-btn" id="btn-tool-marker" title="SPBU" onclick="toggleMarkerMode()"><i class='fa-solid fa-map-pin'></i></button><button class="tool-btn" id="btn-tool-jalan" title="Jalan" onclick="toggleRoadMode()"><i class='fa-solid fa-road'></i></button><button class="tool-btn" id="btn-tool-tanah" title="Tanah" onclick="toggleLandMode()"><i class='fa-solid fa-draw-polygon'></i></button>`;
         L.DomEvent.disableClickPropagation(c); return c;
     }
 });
@@ -382,13 +382,13 @@ function renderSPBU() {
         
         marker.on('dragend', async function(e) {
             const pos = e.target.getLatLng();
-            triggerToastNotification("⏳ Menganalisis alamat baru...");
+            triggerToastNotification("<i class='fa-solid fa-hourglass-half'></i> Menganalisis alamat baru...");
             const alamatBaru = await dapatkanAlamat(pos.lat, pos.lng);
             fetch('../otak_spbu/api_update_coords.php', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: d.id, lat: pos.lat, lng: pos.lng, alamat: alamatBaru })
             }).then(res => res.ok ? res.json() : Promise.reject(res)).then(res => {
                 dataStore.spbu[d.id].latitude = pos.lat; dataStore.spbu[d.id].longitude = pos.lng; dataStore.spbu[d.id].alamat = alamatBaru;
-                triggerToastNotification("📍 Koordinat & Alamat berhasil digeser!"); renderSPBU(); 
+                triggerToastNotification("<i class='fa-solid fa-map-pin'></i> Koordinat & Alamat berhasil digeser!"); renderSPBU(); 
             }).catch(err => { alert("Gagal."); e.target.setLatLng([dataStore.spbu[d.id].latitude, dataStore.spbu[d.id].longitude]); });
         });
 
@@ -771,11 +771,11 @@ window.eksekusiUpdateGaris = () => {
 
     if(!confirm(`PERINGATAN: Mengubah garis kemiskinan menjadi Rp${val} akan mengkalibrasi ulang status miskin/tidak miskin seluruh penduduk di database saat ini.\n\nLanjutkan?`)) return;
 
-    triggerToastNotification("⏳ Mengkalibrasi ulang seluruh data penduduk...");
+    triggerToastNotification("<i class='fa-solid fa-hourglass-half'></i> Mengkalibrasi ulang seluruh data penduduk...");
 
     safeFetch('../otak_kemiskinan/api_update_gariskemiskinan.php', { nilai: parseInt(val) })
         .then(res => {
-            triggerToastNotification("✅ " + res.pesan);
+            triggerToastNotification("<i class='fa-solid fa-check'></i> " + res.pesan);
             document.getElementById('input-garis-kemiskinan').value = ""; 
             muatDataSemua(); 
         })
@@ -786,19 +786,19 @@ window.eksekusiUpdateGaris = () => {
 window.eksekusiSimpanBaru = () => {
     const payload = { nama: document.getElementById('spbu-nama').value, status: document.getElementById('spbu-status').value, telp: document.getElementById('spbu-telp').value, alamat: document.getElementById('spbu-alamat') ? document.getElementById('spbu-alamat').value : "", lat: document.getElementById('spbu-lat').value, lng: document.getElementById('spbu-lng').value };
     safeFetch('../otak_spbu/api_simpan.php', payload)
-        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("✅ SPBU ditambahkan!"); muatDataSemua(); })
+        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("<i class='fa-solid fa-check'></i> SPBU ditambahkan!"); muatDataSemua(); })
         .catch(err => alert(`Gagal menyimpan data.\nAlasan: ${err.message}\nPastikan nama dan lokasi file PHP Anda benar.`));
 };
 window.eksekusiUpdate = (id) => {
     const payload = { id: id, nama: document.getElementById('spbu-nama').value, status: document.getElementById('spbu-status').value, telp: document.getElementById('spbu-telp').value };
     safeFetch('../otak_spbu/api_update.php', payload)
-        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("✅ SPBU diperbarui!"); muatDataSemua(); })
+        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("<i class='fa-solid fa-check'></i> SPBU diperbarui!"); muatDataSemua(); })
         .catch(err => alert(err));
 };
 window.eksekusiHapus = (id) => {
     if(!confirm("Hapus SPBU ini?")) return;
     safeFetch('../otak_spbu/api_hapus.php', { id: id })
-        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("🗑️ SPBU dihapus."); muatDataSemua(); })
+        .then(() => { document.getElementById('modal-spbu').style.display='none'; triggerToastNotification("<i class='fa-solid fa-trash'></i> SPBU dihapus."); muatDataSemua(); })
         .catch(err => alert(err));
 };
 
@@ -806,19 +806,19 @@ window.eksekusiHapus = (id) => {
 window.eksekusiSimpanJalan = () => {
     const payload = { nama: document.getElementById('jalan-nama').value, status: document.getElementById('jalan-status').value, jarak: document.getElementById('jalan-jarak').value, koordinat: document.getElementById('jalan-koordinat').value };
     safeFetch('../otak_jalan/api_simpan.php', payload)
-        .then(() => { batalGambarJalan(); triggerToastNotification("✅ Jalan ditambahkan!"); muatDataSemua(); })
+        .then(() => { batalGambarJalan(); triggerToastNotification("<i class='fa-solid fa-check'></i> Jalan ditambahkan!"); muatDataSemua(); })
         .catch(err => alert(err));
 };
 window.eksekusiUpdateJalan = (id) => {
     const payload = { id: id, nama: document.getElementById('jalan-nama').value, status: document.getElementById('jalan-status').value };
     safeFetch('../otak_jalan/api_update.php', payload)
-        .then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("✅ Jalan diperbarui!"); muatDataSemua(); })
+        .then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("<i class='fa-solid fa-check'></i> Jalan diperbarui!"); muatDataSemua(); })
         .catch(err => alert(err));
 };
 window.eksekusiHapusJalan = (id) => {
     if(!confirm("Hapus jalur ini?")) return;
     safeFetch('../otak_jalan/api_hapus.php', { id: id })
-        .then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("🗑️ Jalan dihapus."); muatDataSemua(); })
+        .then(() => { document.getElementById('modal-jalan').style.display='none'; triggerToastNotification("<i class='fa-solid fa-trash'></i> Jalan dihapus."); muatDataSemua(); })
         .catch(err => alert(err));
 };
 
@@ -923,7 +923,7 @@ window.updatePendudukPopup = (id, popupRef) => {
 window.eksekusiHapusPenduduk = (id) => {
     safeFetch('../otak_kemiskinan/api_hapus_penduduk.php', { id: id })
         .then(() => {
-            triggerToastNotification("🗑️ Data Penduduk dihapus permanen.");
+            triggerToastNotification("<i class='fa-solid fa-trash'></i> Data Penduduk dihapus permanen.");
             muatDataSemua();
         })
         .catch(err => alert(err));
@@ -963,7 +963,7 @@ window.eksekusiSimpanLogBantuan = () => {
     safeFetch('../otak_kemiskinan/api_simpan_logbantuan.php', payload)
         .then(() => {
             document.getElementById('modal-log-bantuan').style.display = 'none';
-            triggerToastNotification("✅ Log bantuan berhasil dicatat.");
+            triggerToastNotification("<i class='fa-solid fa-check'></i> Log bantuan berhasil dicatat.");
         })
         .catch(err => alert("Gagal menyimpan log bantuan: " + err));
 };
@@ -1023,7 +1023,7 @@ window.simpanIbadahPopup = (lat, lng, popupRef) => {
         .then(() => {
             map.closePopup(popupRef); 
             resetAllModes();
-            triggerToastNotification("✅ Rumah Ibadah berhasil ditambahkan!");
+            triggerToastNotification("<i class='fa-solid fa-check'></i> Rumah Ibadah berhasil ditambahkan!");
             muatDataSemua(); 
         })
         .catch(err => alert("Gagal menyimpan data: " + err));
@@ -1081,7 +1081,7 @@ window.updateIbadahPopup = (id, popupRef) => {
         .then(() => {
             map.closePopup(popupRef);
             resetAllModes();
-            triggerToastNotification("✅ Data Rumah Ibadah berhasil diperbarui.");
+            triggerToastNotification("<i class='fa-solid fa-check'></i> Data Rumah Ibadah berhasil diperbarui.");
             muatDataSemua();
         })
         .catch(err => alert("Gagal mengupdate data: " + err));
@@ -1090,7 +1090,7 @@ window.updateIbadahPopup = (id, popupRef) => {
 window.eksekusiHapusIbadah = (id) => {
     safeFetch('../otak_kemiskinan/api_hapus_ibadah.php', { id: id })
         .then(() => {
-            triggerToastNotification("🗑️ Rumah Ibadah dihapus permanen.");
+            triggerToastNotification("<i class='fa-solid fa-trash'></i> Rumah Ibadah dihapus permanen.");
             muatDataSemua();
         })
         .catch(err => alert(err));
@@ -1119,7 +1119,7 @@ window.muatDataSemua = () => {
         }).catch(e => console.warn("API Garis Kemiskinan Offline"))
     ]).then(() => {
         renderKemiskinan();
-        console.log("✅ Sistem WebGIS V3 Siap dan Data Tersinkronisasi Penuh.");
+        console.log("<i class='fa-solid fa-check'></i> Sistem WebGIS V3 Siap dan Data Tersinkronisasi Penuh.");
     });
 };
 

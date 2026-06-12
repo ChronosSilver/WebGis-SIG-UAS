@@ -7,10 +7,12 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
 
     <div id="sidebar-container">
+        <a href="../" class="btn-back-home">⬅ Kembali ke Beranda</a>
         <div id="sidebar-header">
             WebGis-Pontianak
         </div>

@@ -7,10 +7,12 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
 
     <div id="sidebar-container">
+        <a href="../" class="btn-back-home">⬅ Kembali ke Beranda</a>
         <div id="sidebar-header">WebGis-Pontianak</div>
         <!-- Tab Navigasi -->
         <div class="sidebar-tabs">
@@ -20,7 +22,7 @@
         <!-- TAB 1: KEMISKINAN (BARU) -->
         <div id="tab-kemiskinan" class="tab-content active">
             <div class="control-panel">
-                <button class="btn-gps" onclick="lokasiSaya()">📍 Arahkan ke Lokasi Saya</button>
+                <button class="btn-gps" onclick="lokasiSaya()"><i class='fa-solid fa-location-crosshairs'></i> Arahkan ke Lokasi Saya</button>
                 <!-- Input Garis Kemiskinan -->
                 <div class="add-marker-box" style="margin-bottom: 0; padding: 10px 12px;">
                     <label>Batas Garis Kemiskinan (Rp):</label>
@@ -31,14 +33,14 @@
                 </div>
                 <!-- Tombol Kelola Program Pelatihan -->
                 <button class="btn btn-warning" onclick="bukaModalPelatihan()" style="margin-bottom: 10px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span style="font-size: 1.2rem;">📋</span> Kelola Program Pelatihan
+                    <span style="font-size: 1.2rem;"><i class='fa-solid fa-clipboard-list'></i></span> Kelola Program Pelatihan
                 </button>
                 <!-- Tombol Tambah Marker Modern -->
                 <div class="modern-action-box">
                     <label>Mode Penambahan Data:</label>
                     <select id="pilihan-marker-baru" class="modern-select">
-                        <option value="ibadah">🕌 Pusat Radius (Rumah Ibadah)</option>
-                        <option value="penduduk">🏠 Data Keluarga (Penduduk)</option>
+                        <option value="ibadah"><i class='fa-solid fa-mosque'></i> Pusat Radius (Rumah Ibadah)</option>
+                        <option value="penduduk"><i class='fa-solid fa-house-chimney-user'></i> Data Keluarga (Penduduk)</option>
                     </select>
                     <button class="btn-modern-add" id="btn-add-kemiskinan" onclick="toggleKemiskinanMode()">
                         <span class="icon">+</span> Aktifkan Kursor Marker
@@ -59,9 +61,9 @@
         <!-- TAB 2: FILTER & SPBU (LAMA) -->
         <div id="tab-filter" class="tab-content">
             <div id="filter-bar">
-                <button class="filter-tool-btn" onclick="bukaModalFilterLayer()">⚙️</button>
+                <button class="filter-tool-btn" onclick="bukaModalFilterLayer()"><i class='fa-solid fa-gear'></i></button>
                 <span class="filter-label">Status SPBU:</span>
-                <button class="filter-tool-btn" onclick="bukaModalFilterSPBU()">🔍</button>
+                <button class="filter-tool-btn" onclick="bukaModalFilterSPBU()"><i class='fa-solid fa-filter'></i></button>
             </div>
             <div id="card-container" class="card-list-area"></div>
         </div>
@@ -71,8 +73,8 @@
 
     <?php include '../components/modals.php'; ?>
 
-    <button id="btn-selesai-jalan" onclick="selesaiGambarJalan()">✓ Selesai Gambar Jalan</button>
-    <button id="btn-selesai-tanah" onclick="selesaiGambarTanah()">✓ Selesai Area Tanah</button>
+    <button id="btn-selesai-jalan" onclick="selesaiGambarJalan()"><i class='fa-solid fa-check'></i> Selesai Gambar Jalan</button>
+    <button id="btn-selesai-tanah" onclick="selesaiGambarTanah()"><i class='fa-solid fa-check'></i> Selesai Area Tanah</button>
     
     <div id="map"></div>
 

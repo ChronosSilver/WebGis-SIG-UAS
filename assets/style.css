@@ -738,3 +738,5 @@ input[type=range]::-webkit-slider-runnable-track {
     background: var(--blue);
     color: var(--white);
 }
+.btn-back-home { display: block; background: var(--navy); color: #A0AEC0; text-align: center; padding: 10px; text-decoration: none; font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+.btn-back-home:hover { background: #2a4365; color: #fff; }
